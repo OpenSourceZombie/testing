@@ -1,19 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	log.Printf("starting the web server")
+	port := os.Getenv("PORT")
 
-	http.HandleFunc("/", hello)
-	http.ListenAndServe(":", nil)
-}
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
 
-func hello(rw http.ResponseWriter, r *http.Request) {
-	log.Printf("%s from %s", r.Method, r.RemoteAddr)
-	fmt.Fprint(rw, "Hello from the other side")
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.LoadHTMLGlob("templates/*.tmpl.html")
+	router.Static("/static", "static")
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl.html", nil)
+	})
+
+	router.Run(":" + port)
 }
