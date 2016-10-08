@@ -25,7 +25,7 @@ func main() {
 	})
 
 	router.GET("/hello", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello"+c.Request.RemoteAddr, nil)
+		c.String(http.StatusOK, "Hello "+c.Request.RemoteAddr, nil)
 	})
 
 	router.Run(":" + port)
